@@ -1,4 +1,4 @@
-> **Note:** Some of the bugs listed below have proposed fixes and test strategies 
+﻿> **Note:** Some of the bugs listed below have proposed fixes and test strategies 
 that are not yet implemented. These staged fixes are documented for tracking and 
 prioritization but may not reflect the current state of the codebase. See 
 individual entries for details.
@@ -33,8 +33,8 @@ A regression test (`Constructor_WithNotes_ShouldAssignNotes`) was added in the e
 **Date:** 2025-06-02  
 
 **Steps to Reproduce:**  
-- Create an incomplete assignment with no due date � it incorrectly shows as overdue  
-- Create a completed assignment with a past due date � it still shows as overdue  
+- Create an incomplete assignment with no due date — it incorrectly shows as overdue  
+- Create a completed assignment with a past due date — it still shows as overdue  
 
 **Root Cause:**  
 The `IsOverdue()` method did not check for a null due date or completion status.
@@ -217,7 +217,7 @@ Add `page` / `pageSize` query-string handling.
 Planned unit test: `GetAssignments_ShouldReturnPagedResult_WithTotalCount`
 
 **Test Added:**  
-Planned � see Fix section for proposed unit test to validate pagination and metadata.
+Planned — see Fix section for proposed unit test to validate pagination and metadata.
 
 ---
 
@@ -240,7 +240,7 @@ Refactor responsibilities:
 Planned unit test: `ValidationService_ShouldRejectDuplicateTitles`
 
 **Test Added:**  
-Planned � see Fix section for refactor path and future test target.
+Planned — see Fix section for refactor path and future test target.
 
 ---
 
@@ -261,7 +261,7 @@ Constructor logic and exceptions should be managed through factory methods.
 Planned test: `AssignmentFactory_ShouldEnforceFieldValidation`
 
 **Test Added:**  
-Planned � see Fix section for factory pattern and expected validation test.
+Planned — see Fix section for factory pattern and expected validation test.
 
 ---
 
@@ -271,7 +271,7 @@ Planned � see Fix section for factory pattern and expected validation test.
 
 **Steps to Reproduce:**  
 - Run Console UI  
-- Select �Delete Assignment�  
+- Select “Delete Assignment”  
 - Enter title and press Enter  
 - Item is deleted immediately, even if entered in error  
 
@@ -283,7 +283,7 @@ Add Y/N confirmation prompt in `ConsoleUI.DeleteAssignment()` method.
 Planned test: manual testing required; console input mocks optional for regression.
 
 **Test Added:**  
-Planned � manual verification suggested. Optionally mock Console input for unit coverage.
+Planned — manual verification suggested. Optionally mock Console input for unit coverage.
 
 ---
 
@@ -304,7 +304,7 @@ Update all relevant console print logic to include `assignment.Notes`, using con
 Planned visual test: `ConsoleDisplay_ShouldIncludeNotes_WhenPresent`
 
 **Test Added:**  
-Planned � see Fix section. Visual confirmation recommended; unit tests can validate string content.
+Planned — see Fix section. Visual confirmation recommended; unit tests can validate string content.
 
 ---
 
@@ -325,7 +325,7 @@ Add a guard clause or state check before confirming success.
 Planned test: `MarkComplete_ShouldReturnFalse_IfAlreadyComplete`
 
 **Test Added:**  
-Planned � see Fix section. Update `Assignment.MarkComplete()` behavior and confirm feedback logic.
+Planned — see Fix section. Update `Assignment.MarkComplete()` behavior and confirm feedback logic.
 
 ---
 
@@ -346,7 +346,7 @@ Add guard clause in constructor to reject `null` and blank descriptions
 Planned test: `Constructor_ShouldThrow_WhenDescriptionIsNull`
 
 **Test Added:**  
-Planned � see Fix section for null check and constructor exception handling.
+Planned — see Fix section for null check and constructor exception handling.
 
 ---
 
@@ -367,7 +367,7 @@ Add explicit input validation for blank/invalid priority before calling `Enum.Tr
 Planned test: `ConsoleUI_ShouldRejectEmptyPriorityInput`
 
 **Test Added:**  
-TryParsePriority_ShouldRejectBlankOrInvalidInput � verifies ConsoleUI rejects blank and invalid priority inputs and accepts valid values (case-insensitive).
+TryParsePriority_ShouldRejectBlankOrInvalidInput — verifies ConsoleUI rejects blank and invalid priority inputs and accepts valid values (case-insensitive).
 
 ---
 
@@ -388,7 +388,7 @@ Add `[JsonConverter]` and `SwaggerSchemaFilter` to include enum names and values
 Planned test: Manual Swagger review and optional automated OpenAPI schema comparison.
 
 **Test Added:**  
-Planned � manual validation suggested. Optional integration test via Swagger schema parsing.
+Planned — manual validation suggested. Optional integration test via Swagger schema parsing.
 
 ---
 
@@ -408,4 +408,85 @@ Replace real-time references with deterministic inputs (e.g., inject `IDateProvi
 Planned test: Refactor tests to use mockable date context and validate consistency
 
 **Test Added:**  
-Planned � see Fix section. Migrate to testable time abstraction for consistent assertions.
+Planned — see Fix section. Migrate to testable time abstraction for consistent assertions.
+
+---
+
+### BUG-2025-367: Update Assignment Allows Blank New Title  
+**Reported by:** Manual Tester  
+**Date:** 2025-06-13  
+
+**Steps to Reproduce:**  
+1. Run Console UI  
+2. Select “6. Update Assignment”  
+3. Enter an existing assignment title  
+4. When prompted for **new title**, press Enter without typing anything  
+5. Console reports “Assignment updated successfully,” but the title is set to an empty string  
+
+**Root Cause:**  
+`ConsoleUI.UpdateAssignment()` passes whatever the user enters— even an empty string— directly to `AssignmentService.UpdateAssignment()` without validation.
+
+**Fix (Planned):**  
+- Add a guard clause in `ConsoleUI.UpdateAssignment()` to verify `newTitle` is **not null, empty, or whitespace** before calling the service.  
+- If validation fails, show an error and abort the update.  
+
+*Planned tests:*  
+- `UpdateAssignment_ShouldRejectBlankNewTitle` (unit test using console‐input mocks)  
+
+**Test Added (Planned):**  
+See *Fix* section — test names and intent are documented there but not yet implemented.
+
+---
+
+### BUG-2025-368: Update Assignment Allows Blank New Description  
+**Reported by:** Manual Tester  
+**Date:** 2025-06-13  
+
+**Steps to Reproduce:**  
+1. Run Console UI  
+2. Select “6. Update Assignment”  
+3. Enter an existing assignment title  
+4. Provide a valid new title  
+5. Press Enter at **new description** prompt without typing anything  
+6. Console reports success, but description becomes blank  
+
+**Root Cause:**  
+`ConsoleUI.UpdateAssignment()` does not validate `newDescription` before updating.
+
+**Fix (Planned):**  
+- Add validation to ensure `newDescription` is **not null, empty, or whitespace**.  
+- Abort update and display a message if validation fails.  
+
+*Planned tests:*  
+- `UpdateAssignment_ShouldRejectBlankNewDescription`
+
+**Test Added (Planned):**  
+See *Fix* section — tests are outlined but still to be added.
+
+---
+
+### BUG-2025-369: Update Assignment Feature Does Not Support Updating Notes or Priority  
+**Reported by:** Manual Tester  
+**Date:** 2025-06-13  
+
+**Steps to Reproduce:**  
+1. Run Console UI  
+2. Select “6. Update Assignment”  
+3. Observe only prompts for **new title** and **new description**; no way to update notes or priority  
+
+**Root Cause:**  
+`ConsoleUI.UpdateAssignment()` omits prompts and logic for `Notes` and `Priority`, so changes to those fields are impossible through the UI.
+
+**Fix (Planned):**  
+- Extend `UpdateAssignment()` to:  
+  - Prompt for **new priority** (Low/Medium/High) and validate with `TryParsePriority()`  
+  - Prompt for **new notes** (allow blank if user wants to keep existing notes)  
+  - Pass all four fields (title, description, priority, notes) to the service layer  
+- Modify `IAssignmentService.UpdateAssignment()` overload—or add a new overload—to accept the extra fields.  
+
+*Planned tests:*  
+- `UpdateAssignment_ShouldUpdatePriorityAndNotesCorrectly`  
+- `UpdateAssignment_ShouldRejectInvalidPriorityDuringUpdate`  
+
+**Test Added (Planned):**  
+See *Fix* section — test cases are specified but have not been added to the test suite.

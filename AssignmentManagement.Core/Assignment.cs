@@ -38,6 +38,13 @@ namespace AssignmentManagement.Core
         public void Update(string newTitle, string newDescription)
         {
             if (string.IsNullOrWhiteSpace(newDescription))
+                
+                
+                
+                
+                
+                
+                
                 throw new ArgumentException("Description cannot be blank.", nameof(newDescription));
 
             Title = newTitle;
