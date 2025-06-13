@@ -184,3 +184,221 @@ Added a guard clause to the `Assignment` constructor to validate the enum using 
 
 **Test Added:**  
 `AssignmentConstructor_ShouldThrowException_OnInvalidPriority` ensures invalid enum values now raise a meaningful error.
+
+---
+
+---
+
+### BUG-2025-357: Missing Paging & `totalCount` in GET /assignment  
+**Reported by:** QA Automation Bot  
+**Date:** 2025-06-13  
+
+**Steps to Reproduce:**  
+- Seed 40 assignments via POST  
+- Call GET `/api/assignment`  
+- Response body is a raw JSON array with no paging metadata  
+
+**Root Cause:**  
+`AssignmentController` returns `List<Assignment>` directly; no paging envelope exists  
+
+**Fix:**  
+Return an envelope object, e.g.:  
+```csharp
+public record PagedResult<T>(IEnumerable<T> Items, int TotalCount);
+```
+Add `page` / `pageSize` query-string handling.  
+Planned unit test: `GetAssignments_ShouldReturnPagedResult_WithTotalCount`
+
+**Test Added:**  
+Planned — see Fix section for proposed unit test to validate pagination and metadata.
+
+---
+
+### BUG-2025-358: AssignmentService Handles Validation & Storage (High Coupling)  
+**Reported by:** Code Review  
+**Date:** 2025-06-13  
+
+**Steps to Reproduce:**  
+- Open `AssignmentService.cs`  
+- Observe that it performs duplicate title checks, logging, instantiation, and storage  
+
+**Root Cause:**  
+Violates Single Responsibility Principle by combining multiple concerns in one class  
+
+**Fix:**  
+Refactor responsibilities:  
+- `AssignmentService` to coordinate  
+- `AssignmentValidator` for validation  
+- `AssignmentRepository` for persistence  
+Planned unit test: `ValidationService_ShouldRejectDuplicateTitles`
+
+**Test Added:**  
+Planned — see Fix section for refactor path and future test target.
+
+---
+
+### BUG-2025-359: No Central Factory for Creating Assignments  
+**Reported by:** Architecture Lead  
+**Date:** 2025-06-13  
+
+**Steps to Reproduce:**  
+- Assignment objects are created in UI, Console, and Service layers  
+- Validation logic is inconsistently applied  
+
+**Root Cause:**  
+No single factory enforces required structure or validation  
+
+**Fix:**  
+Implement `IAssignmentFactory` to encapsulate creation and enforce rules consistently.  
+Constructor logic and exceptions should be managed through factory methods.  
+Planned test: `AssignmentFactory_ShouldEnforceFieldValidation`
+
+**Test Added:**  
+Planned — see Fix section for factory pattern and expected validation test.
+
+---
+
+### BUG-2025-360: Console UI Lacks Confirmation for Deletes  
+**Reported by:** Manual Tester  
+**Date:** 2025-06-13  
+
+**Steps to Reproduce:**  
+- Run Console UI  
+- Select “Delete Assignment”  
+- Enter title and press Enter  
+- Item is deleted immediately, even if entered in error  
+
+**Root Cause:**  
+No confirmation prompt before performing deletion  
+
+**Fix:**  
+Add Y/N confirmation prompt in `ConsoleUI.DeleteAssignment()` method.  
+Planned test: manual testing required; console input mocks optional for regression.
+
+**Test Added:**  
+Planned — manual verification suggested. Optionally mock Console input for unit coverage.
+
+---
+
+### BUG-2025-361: Console UI Omits Notes Field in Display  
+**Reported by:** QA Intern  
+**Date:** 2025-06-13  
+
+**Steps to Reproduce:**  
+- Add an assignment with notes  
+- List all or view by title  
+- Notes field is not shown  
+
+**Root Cause:**  
+`ConsoleUI.ListAllAssignments()` and related methods omit Notes from display string  
+
+**Fix:**  
+Update all relevant console print logic to include `assignment.Notes`, using conditional formatting to skip empty notes.  
+Planned visual test: `ConsoleDisplay_ShouldIncludeNotes_WhenPresent`
+
+**Test Added:**  
+Planned — see Fix section. Visual confirmation recommended; unit tests can validate string content.
+
+---
+
+### BUG-2025-362: No Feedback When Marking Already Completed Assignment  
+**Reported by:** QA Tester  
+**Date:** 2025-06-13  
+
+**Steps to Reproduce:**  
+- Mark an assignment complete  
+- Try marking it complete again  
+- Console reports success even though no state change occurred  
+
+**Root Cause:**  
+`Assignment.MarkComplete()` is not idempotent-aware; no feedback for redundant operations  
+
+**Fix:**  
+Add a guard clause or state check before confirming success.  
+Planned test: `MarkComplete_ShouldReturnFalse_IfAlreadyComplete`
+
+**Test Added:**  
+Planned — see Fix section. Update `Assignment.MarkComplete()` behavior and confirm feedback logic.
+
+---
+
+### BUG-2025-363: AssignmentConstructor Allows Null Description  
+**Reported by:** Code Reviewer  
+**Date:** 2025-06-13  
+
+**Steps to Reproduce:**  
+- Pass `null` to `description` in constructor  
+- No exception is thrown  
+- Assignment is created with null description  
+
+**Root Cause:**  
+Missing null check for `description` in constructor  
+
+**Fix:**  
+Add guard clause in constructor to reject `null` and blank descriptions  
+Planned test: `Constructor_ShouldThrow_WhenDescriptionIsNull`
+
+**Test Added:**  
+Planned — see Fix section for null check and constructor exception handling.
+
+---
+
+### BUG-2025-364: UI Accepts Empty Priority Input as Default Enum Value  
+**Reported by:** UX Feedback  
+**Date:** 2025-06-13  
+
+**Steps to Reproduce:**  
+- Run Console UI  
+- Leave priority field blank during Add  
+- Assignment is still created (with default enum value)  
+
+**Root Cause:**  
+`Enum.TryParse()` succeeds with null or empty string by defaulting to zero  
+
+**Fix:**  
+Add explicit input validation for blank/invalid priority before calling `Enum.TryParse()`  
+Planned test: `ConsoleUI_ShouldRejectEmptyPriorityInput`
+
+**Test Added:**  
+Planned — see Fix section for input pre-checks and proposed validation test.
+
+---
+
+### BUG-2025-365: Swagger Docs Lack Enum Descriptions for AssignmentPriority  
+**Reported by:** API Documentation Reviewer  
+**Date:** 2025-06-13  
+
+**Steps to Reproduce:**  
+- Open `/swagger`  
+- View POST `/api/assignment` request model  
+- `Priority` shows as `integer`, no values listed  
+
+**Root Cause:**  
+`AssignmentPriority` enum not annotated or registered with Swagger configuration  
+
+**Fix:**  
+Add `[JsonConverter]` and `SwaggerSchemaFilter` to include enum names and values in docs.  
+Planned test: Manual Swagger review and optional automated OpenAPI schema comparison.
+
+**Test Added:**  
+Planned — manual validation suggested. Optional integration test via Swagger schema parsing.
+
+---
+
+### BUG-2025-366: Unit Tests Rely on Hardcoded Dates  
+**Reported by:** CI Maintainer  
+**Date:** 2025-06-13  
+
+**Steps to Reproduce:**  
+- Run tests in different time zones or months  
+- Tests intermittently fail due to date logic  
+
+**Root Cause:**  
+Many unit tests use `DateTime.Now.AddDays()` without fixed baseline context  
+
+**Fix:**  
+Replace real-time references with deterministic inputs (e.g., inject `IDateProvider`)  
+Planned test: Refactor tests to use mockable date context and validate consistency
+
+**Test Added:**  
+Planned — see Fix section. Migrate to testable time abstraction for consistent assertions.
