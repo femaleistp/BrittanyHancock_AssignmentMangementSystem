@@ -1,0 +1,15 @@
+# Technical Debt Summary – Week 9 Maintenance Audit
+
+1. **`CheckIfOverdue_ShouldLogResult_WhenAssignmentExists()` – High Complexity**
+   - Complexity: 14  
+   - Concern: This test method performs setup, execution, and assertions in a single block, making it harder to read and debug.  
+   - Fix Consideration: Split into smaller test helpers or isolate phases to reduce cyclomatic complexity and improve clarity.
+
+2. **`FormatAssignment()` – Redundant Conditional Logic**
+   - Concern: Repeats similar formatting logic for different assignment statuses.  
+   - Fix Consideration: Could be consolidated using a shared formatter or helper method to improve clarity and reduce duplication.
+
+3. **`AssignmentService.cs` – High Coupling**
+   - Coupling Score: 17  
+   - Concern: Centralizes logic, formatting, and logging in one class.  
+   - Fix Consideration: Could be split into separate services if future functionality expands or maintainability becomes an issue.
