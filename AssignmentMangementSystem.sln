@@ -19,6 +19,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 	ProjectSection(SolutionItems) = preProject
 		BugReports.md = BugReports.md
 		MaintenancePlan.md = MaintenancePlan.md
+		CodeReview.md = CodeReview.md
 		README.md = README.md
 		TechnicalDebtNotes.txt = TechnicalDebtNotes.txt
 	EndProjectSection
