@@ -173,7 +173,7 @@ It confirms that the method logs the correct message format and returns the corr
 
 ---
 
-### BUG-2025-356: Assignment Constructor Does Not Reject Invalid Enum Cast  
+### BUG-2025-356: Assignment Constructor Does Not Reject Invalid Priority or Blank Description 
 **Reported by:** Developer (Brittany)  
 **Date:** 2025-06-11  
 
@@ -186,12 +186,13 @@ It confirms that the method logs the correct message format and returns the corr
 The constructor of `Assignment` did not validate that the passed enum value was within the defined range of `AssignmentPriority`. This allowed invalid enum values to be assigned silently.
 
 **Fix:**  
-Added a guard clause to the `Assignment` constructor to validate the enum using `Enum.IsDefined` and throw an `ArgumentException` if the value is invalid.
+Added a guard clause to the `Assignment` constructor to:
+- Validate that the priority enum is defined
+- Reject whitespace-only or null descriptions
 
 **Test Added:**  
 `AssignmentConstructor_ShouldThrowException_OnInvalidPriority` ensures invalid enum values now raise a meaningful error.
-
----
+`Constructor_WhitespaceOnlyDescription_ShouldThrowException` ensures that whitespace-only descriptions are rejected.
 
 ---
 

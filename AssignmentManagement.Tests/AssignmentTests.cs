@@ -121,5 +121,24 @@
             Assert.Contains("Reading: Design Patterns", formatted);
             Assert.DoesNotContain("Notes: ", formatted); // It shouldn't break or show 'Notes: null'
         }
+
+        // BUG-2025-356: Constructor should reject blank or whitespace-only Description
+        [Fact]
+        public void Constructor_WhitespaceOnlyDescription_ShouldThrowException()
+        {
+            // Arrange
+            var title = "Valid Title";
+            var whitespaceDescription = "   ";
+            var dueDate = DateTime.Now.AddDays(3);
+            var priority = AssignmentPriority.Medium;
+            var notes = "Notes";
+
+            // Act & Assert
+            var ex = Assert.Throws<ArgumentException>(() =>
+                new Assignment(title, whitespaceDescription, dueDate, priority, notes));
+
+            Assert.Contains("Description cannot be blank", ex.Message);
+        }
+
     }
 }

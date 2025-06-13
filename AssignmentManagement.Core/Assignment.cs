@@ -16,8 +16,19 @@ namespace AssignmentManagement.Core
             if (!Enum.IsDefined(typeof(AssignmentPriority), priority))
                 throw new ArgumentException("Invalid priority specified.");
 
-            if (string.IsNullOrWhiteSpace(title))
+            if (string.IsNullOrWhiteSpace(title)) 
                 throw new ArgumentException("Title cannot be blank.", nameof(title));
+
+            // BUG-2025-356: Check for blank description
+            if (string.IsNullOrWhiteSpace(description)) 
+                throw new ArgumentException("Description cannot be blank.", nameof(description));
+
+
+            // BUG-2025-356 Enum validation in assignment constructor
+            if (!Enum.IsDefined(typeof(AssignmentPriority), priority))  
+            {
+                throw new ArgumentException($"Invalid priority value: {priority}", nameof(priority));
+            }
 
             Title = title;
             Description = description;
