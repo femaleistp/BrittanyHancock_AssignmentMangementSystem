@@ -13,9 +13,6 @@ namespace AssignmentManagement.Core
 
         public Assignment(string title, string description, DateTime? dueDate, AssignmentPriority priority, string notes = "")
         {
-            if (!Enum.IsDefined(typeof(AssignmentPriority), priority))
-                throw new ArgumentException("Invalid priority specified.");
-
             if (string.IsNullOrWhiteSpace(title)) 
                 throw new ArgumentException("Title cannot be blank.", nameof(title));
 
