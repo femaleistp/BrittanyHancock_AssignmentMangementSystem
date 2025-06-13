@@ -41,6 +41,9 @@ Fork the repo and submit a pull request. All contributions should include relate
 ### Bug Reports and Feature Requests
 To report a bug or request a feature, please open an issue on the [GitHub repository](https://github.com/your-repo-link-here).
 
+> **Note:** The `BugReports.md` file includes staged bugs with proposed fixes and planned tests that are not yet implemented. These are documented for transparency and prioritization in future development cycles.
+
+
 ## Architecture Overview
 AssignmentManagementSystem
 ├── AssignmentManagement.Api

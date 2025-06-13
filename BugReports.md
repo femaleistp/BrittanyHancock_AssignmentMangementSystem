@@ -1,3 +1,9 @@
+> **Note:** Some of the bugs listed below have proposed fixes and test strategies 
+that are not yet implemented. These staged fixes are documented for tracking and 
+prioritization but may not reflect the current state of the codebase. See 
+individual entries for details.
+
+
 # Bug Reports
 
 ---
