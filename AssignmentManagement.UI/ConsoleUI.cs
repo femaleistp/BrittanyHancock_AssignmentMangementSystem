@@ -41,16 +41,16 @@ namespace AssignmentManagement.UI
                         ListIncompleteAssignments();
                         break;
                     case "4":
-                        MarkAssignmentComplete(); // TODO
+                        MarkAssignmentComplete(); 
                         break;
                     case "5":
-                        SearchAssignmentByTitle(); // TODO
+                        SearchAssignmentByTitle(); 
                         break;
                     case "6":
-                        UpdateAssignment(); // TODO
+                        UpdateAssignment();
                         break;
                     case "7":
-                        DeleteAssignment(); // TODO
+                        DeleteAssignment();
                         break;
                     case "0":
                         Console.WriteLine("Goodbye!");
