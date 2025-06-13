@@ -62,5 +62,20 @@ namespace AssignmentManagement.Tests
 
             mock.Verify(s => s.DeleteAssignment("ToDelete"), Times.Once);
         }
+
+        [Fact] // BUG-2025-364 Test for invalid priority input
+        public void TryParsePriority_ShouldRejectBlankOrInvalidInput()
+        {
+            // Blank input
+            Assert.False(ConsoleUI.TryParsePriority("  ", out _));
+
+            // Gibberish
+            Assert.False(ConsoleUI.TryParsePriority("Extreme", out _));
+
+            // Valid (case-insensitive)
+            Assert.True(ConsoleUI.TryParsePriority("medium", out var p));
+            Assert.Equal(AssignmentPriority.Medium, p);
+        }
+
     }
 }

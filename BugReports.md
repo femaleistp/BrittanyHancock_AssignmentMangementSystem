@@ -367,7 +367,7 @@ Add explicit input validation for blank/invalid priority before calling `Enum.Tr
 Planned test: `ConsoleUI_ShouldRejectEmptyPriorityInput`
 
 **Test Added:**  
-Planned — see Fix section for input pre-checks and proposed validation test.
+TryParsePriority_ShouldRejectBlankOrInvalidInput — verifies ConsoleUI rejects blank and invalid priority inputs and accepts valid values (case-insensitive).
 
 ---
 

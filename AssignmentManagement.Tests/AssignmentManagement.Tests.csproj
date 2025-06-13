@@ -27,6 +27,7 @@
     <ProjectReference Include="..\AssignmentManagement.Api\AssignmentManagement.Api.csproj" />
     <ProjectReference Include="..\AssignmentManagement.Console\AssignmentManagement.Console.csproj" />
     <ProjectReference Include="..\AssignmentManagement.Core\AssignmentManagement.Core.csproj" />
+    <ProjectReference Include="..\AssignmentManagement.UI\AssignmentManagement.UI.csproj" />
   </ItemGroup>
 
   <ItemGroup>

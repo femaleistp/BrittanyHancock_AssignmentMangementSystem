@@ -73,9 +73,10 @@ namespace AssignmentManagement.UI
             Console.WriteLine("Enter assignment priority (Low, Medium, High):");
             var priorityInput = Console.ReadLine();
 
-            if (!Enum.TryParse<AssignmentPriority>(priorityInput, true, out var priority))
+            // Consolidated validation – calls helper
+            if (!TryParsePriority(priorityInput, out var priority))
             {
-                Console.WriteLine("Invalid priority entered. Please enter Low, Medium, or High.");
+                Console.WriteLine("Priority must be Low, Medium, or High (cannot be blank).");
                 return;
             }
 
@@ -188,5 +189,17 @@ namespace AssignmentManagement.UI
                 Console.WriteLine("Assignment not found or could not be deleted.");
             }
         }
+
+        // BUG-2025-364: Parse & validate console priority input
+        public static bool TryParsePriority(string input, out AssignmentPriority priority)
+        {
+            priority = AssignmentPriority.Low;            // satisfies 'out' param
+            if (string.IsNullOrWhiteSpace(input)) return false;
+
+            return Enum.TryParse(input, true, out priority) &&
+                   Enum.IsDefined(typeof(AssignmentPriority), priority);
+        }
+
+
     }
 }
